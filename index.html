@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Birthday Surprise 💌</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body {
+      margin: 0;
+      overflow-x: hidden;
+      font-family: 'Georgia', serif;
+      background: radial-gradient(circle at top, #311827 0%, #1b1020 45%, #120b16 100%);
+      color: white;
+    }
+    .hidden-section { display: none; }
+    .glass { backdrop-filter: blur(18px); background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255, 255, 255, 0.12); }
+    .glow { box-shadow: 0 0 40px rgba(255, 182, 193, 0.18); }
+    .floating-heart { position: fixed; color: rgba(255, 192, 203, 0.18); animation: floatHeart 12s linear infinite; font-size: 22px; z-index: 0; pointer-events: none; }
+    @keyframes floatHeart { 0% { transform: translateY(110vh) scale(0.8); opacity: 0; } 15% { opacity: 1; } 100% { transform: translateY(-20vh) scale(1.4); opacity: 0; } }
+    .fade-up { opacity: 0; transform: translateY(30px); animation: fadeUp 1.2s ease forwards; }
+    .fade-delay-1 { animation-delay: 0.3s; }
+    .fade-delay-2 { animation-delay: 0.7s; }
+    .fade-delay-3 { animation-delay: 1.1s; }
+    @keyframes fadeUp { to { opacity: 1; transform: translateY(0); } }
+    .romantic-title { background: linear-gradient(90deg, #ffd6e0, #ffb6c9, #ffe3ea); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+
+    /* ENVELOPE */
+    .envelope-scene { perspective: 1600px; display: flex; justify-content: center; align-items: center; }
+    .envelope { position: relative; width: 360px; height: 250px; cursor: pointer; transition: transform 0.5s ease; filter: drop-shadow(0 20px 40px rgba(0,0,0,0.28)); }
+    .envelope:hover { transform: translateY(-8px) scale(1.02); }
+    .env-back { position: absolute; inset: 0; background: linear-gradient(145deg, #f9dbe3, #efb6c7); border-radius: 18px; z-index: 1; overflow: hidden; }
+    .env-left, .env-right, .env-bottom { position: absolute; z-index: 3; }
+    .env-left { width: 50%; height: 100%; left: 0; top: 0; background: linear-gradient(145deg, #f3c7d4, #e9aebf); clip-path: polygon(0 0, 100% 50%, 0 100%); }
+    .env-right { width: 50%; height: 100%; right: 0; top: 0; background: linear-gradient(145deg, #f3c7d4, #e9aebf); clip-path: polygon(100% 0, 0 50%, 100% 100%); }
+    .env-bottom { width: 100%; height: 60%; bottom: 0; left: 0; background: linear-gradient(145deg, #f0bfd0, #e6a8bb); clip-path: polygon(0 0, 50% 70%, 100% 0, 100% 100%, 0 100%); }
+    .env-flap { position: absolute; width: 100%; height: 58%; top: 0; left: 0; background: linear-gradient(145deg, #ffe6ec, #f7c5d3); clip-path: polygon(0 0, 50% 100%, 100% 0); transform-origin: top center; transition: transform 1.3s ease; z-index: 5; border-radius: 16px 16px 0 0; }
+    .seal { position: absolute; left: 50%; top: 53%; transform: translate(-50%, -50%); width: 82px; height: 82px; border-radius: 999px; background: radial-gradient(circle at 30% 30%, #ff8fb0, #e65f8f); z-index: 6; display: flex; align-items: center; justify-content: center; font-size: 22px; color: white; font-weight: bold; letter-spacing: 2px; box-shadow: 0 10px 30px rgba(230, 95, 143, 0.4); transition: all 0.8s ease; }
+    .seal::after { content: "❤"; position: absolute; font-size: 18px; top: 10px; right: 12px; opacity: 0.9; }
+    .letter-peek { position: absolute; width: 86%; height: 190px; left: 7%; bottom: 14px; background: linear-gradient(180deg, #fffdfd, #fff4f7); color: #5a2335; border-radius: 18px; z-index: 2; box-shadow: 0 14px 30px rgba(0,0,0,0.14); transition: transform 1.4s ease; }
+    .opened .env-flap { transform: rotateX(180deg); }
+    .opened .seal { opacity: 0; transform: translate(-50%, -50%) scale(0.7); }
+    .opened .letter-peek { transform: translateY(-135px); }
+
+    .countdown-box { min-width: 90px; padding: 18px 14px; border-radius: 22px; text-align: center; backdrop-filter: blur(14px); background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.12); }
+    .count-num { font-size: 2rem; font-weight: 800; color: #ffd6e0; }
+    .count-label { font-size: 0.78rem; letter-spacing: 0.18em; text-transform: uppercase; color: rgba(255,255,255,0.72); margin-top: 6px; }
+
+    .slider { position: relative; width: 100%; max-width: 700px; margin: auto; overflow: hidden; border-radius: 28px; }
+    .slides { display: flex; transition: transform 0.8s ease-in-out; }
+    .slide { min-width: 100%; position: relative; }
+    .slide img { width: 100%; height: 500px; object-fit: cover; display: block; }
+    .caption { position: absolute; bottom: 0; left: 0; right: 0; padding: 24px; background: linear-gradient(to top, rgba(0,0,0,0.65), transparent); color: white; font-size: 18px; text-align: center; }
+    .slider-buttons { display: flex; justify-content: center; gap: 12px; margin-top: 20px; flex-wrap: wrap; }
+    .slider-buttons button { background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.2); color: white; padding: 12px 18px; border-radius: 999px; cursor: pointer; transition: 0.3s; }
+    .slider-buttons button:hover { background: rgba(255,255,255,0.28); }
+  </style>
+</head>
+<body class="min-h-screen">
+  <div class="floating-heart left-[10%]" style="animation-delay: 0s;">❤</div>
+  <div class="floating-heart left-[20%]" style="animation-delay: 2s;">❤</div>
+  <div class="floating-heart left-[35%]" style="animation-delay: 4s;">❤</div>
+  <div class="floating-heart left-[50%]" style="animation-delay: 1s;">❤</div>
+  <div class="floating-heart left-[65%]" style="animation-delay: 3s;">❤</div>
+  <div class="floating-heart left-[80%]" style="animation-delay: 5s;">❤</div>
+
+  <!-- SOUND -->
+  <audio id="bgMusic" src="sound.mp3.mp3"></audio>
+
+  
+  <section id="mainSection" class="min-h-screen flex items-center justify-center px-6 py-16 relative z-10">
+    <div class="text-center max-w-5xl w-full">
+      <p id="introTag" class="uppercase tracking-[0.35em] text-pink-200 text-xs mb-5 fade-up">
+        birthday surprise for someone special
+      </p>
+
+      <h1 id="mainTitle" class="text-4xl md:text-6xl font-bold mb-6 fade-up fade-delay-1 romantic-title">
+        Countdown to 31 March 2026 💖
+      </h1>
+
+      <p id="mainDesc" class="text-pink-100/85 max-w-2xl mx-auto text-lg leading-8 mb-10 fade-up fade-delay-2">
+        Sebelum surat ini dibuka... ada satu hari yang ingin dirayakan dengan sangat spesial ✨
+      </p>
+
+      <div id="countdownWrap" class="flex flex-wrap justify-center gap-4 mb-14 fade-up fade-delay-2">
+        <div class="countdown-box"><div id="days" class="count-num">00</div><div class="count-label">Hari</div></div>
+        <div class="countdown-box"><div id="hours" class="count-num">00</div><div class="count-label">Jam</div></div>
+        <div class="countdown-box"><div id="minutes" class="count-num">00</div><div class="count-label">Menit</div></div>
+        <div class="countdown-box"><div id="seconds" class="count-num">00</div><div class="count-label">Detik</div></div>
+      </div>
+
+      <div id="envelopeStage" class="envelope-scene fade-up fade-delay-3 mb-10">
+        <div class="envelope" id="envelope" onclick="openEnvelope()">
+          <div class="env-back"></div>
+          <div class="letter-peek"></div>
+          <div class="env-left"></div>
+          <div class="env-right"></div>
+          <div class="env-bottom"></div>
+          <div class="env-flap"></div>
+          <div class="seal">KLIK</div>
+        </div>
+      </div>
+
+      <!-- MUNCUL SETELAH KLIK AMPLOP -->
+      <div id="afterOpen" class="hidden-section">
+        <div class="max-w-3xl mx-auto">
+          <div class="glass glow rounded-[2rem] p-8 md:p-14 text-center mb-12">
+            <p class="uppercase tracking-[0.35em] text-pink-200 text-xs mb-4 fade-up">for my special person</p>
+            <h2 class="text-4xl md:text-6xl font-bold text-pink-100 mb-6 fade-up fade-delay-1">Happy Birthday, <span class="text-rose-300">Nama Dia</span> 💖</h2>
+            <p class="text-pink-50/90 text-lg md:text-xl leading-9 max-w-2xl mx-auto mb-8 fade-up fade-delay-2">Di hari spesial ini, aku cuma ingin kamu tahu kalau kehadiranmu itu begitu berarti. Semoga semua hal baik, indah, dan penuh bahagia selalu datang menghampirimu — hari ini, besok, dan seterusnya.</p>
+            <div class="glass rounded-3xl p-6 md:p-8 max-w-2xl mx-auto mb-8 fade-up fade-delay-3">
+              <p class="text-rose-100 text-lg md:text-xl italic leading-9">“Terima kasih karena sudah hadir di dunia ini, dan tanpa sadar menjadi salah satu alasan kenapa hari-hariku terasa lebih hangat.” ✨</p>
+            </div>
+            <button onclick="showSecretMessage()" class="px-8 py-4 rounded-full bg-gradient-to-r from-pink-300 to-rose-300 text-[#2a1328] font-semibold text-lg hover:scale-105 transition duration-300 shadow-xl">Open My Heart 💌</button>
+            <div id="secretMessage" class="hidden mt-10">
+              <div class="glass rounded-3xl p-6 md:p-8">
+                <p class="text-pink-100 text-lg leading-9">Aku harap di usia barumu, kamu selalu dikelilingi oleh cinta, kebahagiaan, kesehatan, dan semua hal indah yang pantas kamu dapatkan.<br><br>Dan kalau suatu hari kamu merasa dunia sedang berat, semoga kamu selalu ingat bahwa ada seseorang yang diam-diam selalu mendoakan yang terbaik untukmu. 💗</p>
+              </div>
+              <button onclick="showGallery()" class="mt-8 px-8 py-4 rounded-full bg-white/10 border border-white/20 text-white font-semibold hover:scale-105 transition">Lihat Kenangan Kita 📸</button>
+            </div>
+          </div>
+
+          <div id="galleryBlock" class="hidden">
+            <p class="uppercase tracking-[0.35em] text-pink-200 text-xs mb-4 fade-up">our little memories</p>
+            <h2 class="text-4xl md:text-6xl font-bold mb-12 romantic-title fade-up fade-delay-1">Kenangan Untukmu 💞</h2>
+            <div class="slider glass glow p-3 fade-up fade-delay-2">
+              <div class="slides" id="slides">
+                <div class="slide"><img src="img4.jpg" alt="Foto 1"><div class="caption">Foto pertama yang selalu bikin aku senyum 🌷</div></div>
+                <div class="slide"><img src="img3.jpg" alt="Foto 2"><div class="caption">Momen sederhana, tapi selalu terasa spesial 🤍</div></div>
+                <div class="slide"><img src="img2.jpg" alt="Foto 3"><div class="caption">Salah satu kenangan favoritku bersamamu ✨</div></div>
+                <div class="slide"><img src="img1.jpg" alt="Foto 4"><div class="caption">Dan semoga masih banyak cerita indah setelah ini 💗</div></div>
+              </div>
+            </div>
+            <div class="slider-buttons fade-up fade-delay-3">
+              <button onclick="prevSlide()">⬅ Sebelumnya</button>
+              <button onclick="nextSlide()">Berikutnya ➡</button>
+            </div>
+            <div class="mt-12 glass rounded-3xl p-8 max-w-3xl mx-auto fade-up fade-delay-3">
+              <p class="text-pink-100 text-lg md:text-xl leading-9">Sekali lagi, selamat ulang tahun yaa 💖<br>Semoga semua hal baik selalu menemukan jalannya menuju kamu.<br><br>Dan semoga... aku masih boleh jadi bagian kecil dari cerita bahagiamu. 🌹</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <script>
+    const envelope = document.getElementById('envelope');
+    const music = document.getElementById('bgMusic');
+    const secretMessage = document.getElementById('secretMessage');
+    const galleryBlock = document.getElementById('galleryBlock');
+    const afterOpen = document.getElementById('afterOpen');
+    const countdownWrap = document.getElementById('countdownWrap');
+    const envelopeStage = document.getElementById('envelopeStage');
+    const introTag = document.getElementById('introTag');
+    const mainTitle = document.getElementById('mainTitle');
+    const mainDesc = document.getElementById('mainDesc');
+
+    const targetDate = new Date('March 31, 2026 00:00:00').getTime();
+    function updateCountdown() {
+      const now = new Date().getTime();
+      const distance = targetDate - now;
+      if (distance <= 0) return;
+      const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+      const hours = Math.floor((distance / (1000 * 60 * 60)) % 24);
+      const minutes = Math.floor((distance / (1000 * 60)) % 60);
+      const seconds = Math.floor((distance / 1000) % 60);
+      document.getElementById('days').textContent = String(days).padStart(2, '0');
+      document.getElementById('hours').textContent = String(hours).padStart(2, '0');
+      document.getElementById('minutes').textContent = String(minutes).padStart(2, '0');
+      document.getElementById('seconds').textContent = String(seconds).padStart(2, '0');
+    }
+    updateCountdown(); setInterval(updateCountdown, 1000);
+
+    function openEnvelope() {
+      envelope.classList.add('opened');
+      music.play().catch(() => {});
+      setTimeout(() => {
+        introTag.style.display = 'none';
+        mainTitle.style.display = 'none';
+        mainDesc.style.display = 'none';
+        countdownWrap.style.display = 'none';
+        envelopeStage.style.display = 'none';
+        afterOpen.style.display = 'block';
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }, 2100);
+    }
+
+    function showSecretMessage() {
+      secretMessage.classList.remove('hidden');
+      secretMessage.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+
+    function showGallery() {
+      galleryBlock.classList.remove('hidden');
+      galleryBlock.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    let currentSlide = 0;
+    const slides = document.getElementById('slides');
+    const totalSlides = document.querySelectorAll('.slide').length;
+    function updateSlide() { slides.style.transform = `translateX(-${currentSlide * 100}%)`; }
+    function nextSlide() { currentSlide = (currentSlide + 1) % totalSlides; updateSlide(); }
+    function prevSlide() { currentSlide = (currentSlide - 1 + totalSlides) % totalSlides; updateSlide(); }
+    setInterval(() => { if (!galleryBlock.classList.contains('hidden')) nextSlide(); }, 4000);
+  </script>
+</body>
+</html>
